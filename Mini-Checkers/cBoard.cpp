@@ -31,7 +31,8 @@ cBoard::cBoard()
 	for (int i = 0; i < 6; i++)
 		board[i] = new char[6];
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 6; i++) 
+	{
 		if (i <= 1)
 			piece = AI_PIECE;
 		else if (i >= 4)
@@ -39,14 +40,16 @@ cBoard::cBoard()
 		else
 			piece = EMPTY_CHAR;
 
-		for (int j = 0; j < 6; j++) {
+		for (int j = 0; j < 6; j++) 
+		{
 			if (i % 2 == 0) {
 				if (j % 2 == 0)
 					board[i][j] = BLANK_CHAR;
 				else
 					board[i][j] = piece;
 			}
-			else {
+			else 
+			{
 				if (j % 2 == 1)
 					board[i][j] = BLANK_CHAR;
 				else
@@ -65,15 +68,19 @@ cBoard::~cBoard()
 	delete[] board;
 }
 
-int cBoard::get_pPieces() {
+int cBoard::get_pPieces() 
+{
 	return pPieces;
 }
-int cBoard::get_aPieces() {
+int cBoard::get_aPieces() 
+{
 	return aPieces;
 }
 
-void cBoard::printBoard() {
-	for (int i = 0; i < 6; i++) {
+void cBoard::printBoard() 
+{
+	for (int i = 0; i < 6; i++) 
+	{
 		for (int j = 0; j < 6; j++)
 			cout << board[i][j];
 		cout << endl;
@@ -81,33 +88,17 @@ void cBoard::printBoard() {
 }
 
 void cBoard::movePiece(bool player, int x, int y, int newx, int newy) {
-	if (player) {	//Adjusts Player position
+	if (player) 
+	{	//Adjusts Player position
 		y = 5 - y;
 		newy = 5 - newy;
 	}
 
-	//Checks to see if coord is in board, or is invalid piece
-	if ((x >= 6) || (y >= 6) || (board[y][x] == EMPTY_CHAR) || (board[y][x] == BLANK_CHAR))
-		cout << "Invalid Piece" << endl;
-	//Checks for new location validity
-	else if ((newx >= 6) || (newy >= 6) || (board[newy][newx] != EMPTY_CHAR))
-		cout << "Invalid New Location" << endl;
-	//Checks to see if move is within bounds
-	//Additionally checks jump conditions
-	else if (((newx != x + 1) && (newx != x - 1) && (newx != x + 2) && (newx != x - 2))
-		|| (!player && (newy != y + 1) && (newy != y + 2)) 
-		|| (player && (newy != y - 1) && (newy != y - 2)))
-		cout << "Invalid Move" << endl;
-	else {	//Proceeds with move
-		if (abs(newy - y) == 2) {//Checks if it is a jump
-			int remx = (newx + x) / 2;	//'Jumped' Piece coord
-			int remy = (newy + y) / 2;
-			if (board[remy][remx] == board[y][x]) {	//Checks to see if jumping over own piece
-				cout << "Can't jump over own piece!" << endl;
-				return;
-			}
-			board[remy][remx] = EMPTY_CHAR;	//Removes 'jumped' piece
-		}
+	if (validMove(player, x, y, newx, newy)) 
+	{
+		if (abs(newy - y) == 2) //Checks if it is a jump
+			board[(newy + y) / 2][(newx + x) / 2] = EMPTY_CHAR;	//Removes 'jumped' piece
+		
 		char piece = board[y][x];	//Temporary placeholder for the piece
 		board[y][x] = EMPTY_CHAR;	//Removes piece at old location
 		board[newy][newx] = piece;	//Sets piece at new location
@@ -118,12 +109,40 @@ void cBoard::movePiece(bool player, int x, int y, int newx, int newy) {
 	return;
 }
 
+bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
+	//Checks to see if coord is in board, or is invalid piece
+	if ((x >= 6) || (y >= 6) || (board[y][x] == EMPTY_CHAR) || (board[y][x] == BLANK_CHAR))
+		return false;
+	//Checks for new location validity
+	else if ((newx >= 6) || (newy >= 6) || (board[newy][newx] != EMPTY_CHAR))
+		return false;
+	//Checks to see if move is within bounds
+	//Additionally checks jump conditions
+	else if (((newx != x + 1) && (newx != x - 1) && (newx != x + 2) && (newx != x - 2))
+		|| (!player && (newy != y + 1) && (newy != y + 2))
+		|| (player && (newy != y - 1) && (newy != y - 2)))
+		return false;
+	//Checks if it is a jump
+	else if (abs(newy - y) == 2) 
+	{
+		int remx = (newx + x) / 2;	//'Jumped' Piece coord
+		int remy = (newy + y) / 2;
+		if (board[remy][remx] == board[y][x]) 
+		{	//Checks to see if jumping over own piece
+			return false;
+		}
+	}
+	else
+		return true;
+}
 
 void cBoard::countPieces() {
 	int tempP = 0;
 	int tempA = 0;
-	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 6; j++) {
+	for (int i = 0; i < 6; i++) 
+	{
+		for (int j = 0; j < 6; j++) 
+		{
 			if (board[i][j] == AI_PIECE)
 				tempA++;
 			else if (board[i][j] == PLAYER_PIECE)
@@ -139,10 +158,13 @@ int cBoard::isEnd() {
 		return 1;
 	else if (aPieces == 0)
 		return -1;
-	else {
+	else 
+	{
 		int temp = 0;
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
+		for (int i = 0; i < 6; i++) 
+		{
+			for (int j = 0; j < 6; j++) 
+			{
 
 			}
 		}

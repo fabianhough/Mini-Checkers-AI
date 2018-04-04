@@ -14,6 +14,7 @@ public:
 
 	void printBoard();
 	void movePiece(bool player, int x, int y, int newx, int newy);
+	bool validMove(bool player, int x, int y, int newx, int newy);
 	void countPieces();
 	int isEnd();
 };
