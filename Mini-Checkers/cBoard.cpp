@@ -119,7 +119,7 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 	//Checks to see if move is within bounds
 	//Additionally checks jump conditions
 	else if (((newx != x + 1) && (newx != x - 1) && (newx != x + 2) && (newx != x - 2))
-		|| (!player && (newy != y + 1) && (newy != y + 2))
+		|| (!player && (newy != y + 1) && (newy != y + 2))	//Make sure not accept x mv 1, y mv 2
 		|| (player && (newy != y - 1) && (newy != y - 2)))
 		return false;
 	//Checks if it is a jump
@@ -127,8 +127,8 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 	{
 		int remx = (newx + x) / 2;	//'Jumped' Piece coord
 		int remy = (newy + y) / 2;
-		if (board[remy][remx] == board[y][x]) 
-		{	//Checks to see if jumping over own piece
+		if ((board[remy][remx] == board[y][x]) || (board[remy][remx] == EMPTY_CHAR))
+		{	//Checks to see if jumping over own piece or empty space
 			return false;
 		}
 	}
