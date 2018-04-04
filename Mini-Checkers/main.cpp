@@ -1,36 +1,30 @@
 #include <iostream>
-#include "SDL.h"
-#undef main
 #include "cBoard.h"
+#include "Game.h"
 using namespace std;
 
 int main() 
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Window *window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		600, 400, SDL_WINDOW_SHOWN);
+	/*
+	Game *game = nullptr;
 
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+	game = new Game();
 
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+	game->init("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
 
-	SDL_RenderClear(renderer);
-
-	SDL_RenderPresent(renderer);
-
-	SDL_Delay(3000);
-
-
-	while (true)
+	while (game->running())
 	{
-
-
+		game->handleEvents();
+		game->update();
+		game->render();
 	}
 
+	game->clean();
+	*/
 
 
 
-	/*
+
 	cBoard game;
 	game.printBoard();
 	cout << endl << game.get_aPieces() << endl << game.get_pPieces() << endl;
@@ -59,7 +53,7 @@ int main()
 	cout << endl;
 	game.printBoard();
 
-	cout << endl << game.get_aPieces() << endl << game.get_pPieces() << endl;*/
+	cout << endl << game.get_aPieces() << endl << game.get_pPieces() << endl;
 
 	return 0;
 }
