@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "SDL.h"
+#include "SDL_image.h"
 #undef main
 
 class Game
@@ -9,6 +10,8 @@ private:
 	bool isRunning;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+
+	SDL_Texture* boardTex;
 public:
 	Game();
 	~Game();

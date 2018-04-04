@@ -39,6 +39,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 	else
 		isRunning = false;
+
+	SDL_Surface* tempSurface = IMG_Load("assets/cboard.jpg");
+	boardTex = SDL_CreateTextureFromSurface(renderer, tempSurface);
+	SDL_FreeSurface(tempSurface);
+
 }
 
 void Game::handleEvents()
@@ -65,6 +70,10 @@ void Game::render()
 {
 	SDL_RenderClear(renderer);
 	//Add things to render
+	SDL_RenderCopy(renderer, boardTex, NULL, NULL);
+
+
+
 	SDL_RenderPresent(renderer);
 }
 

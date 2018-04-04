@@ -5,12 +5,12 @@ using namespace std;
 
 int main() 
 {
-	/*
+	
 	Game *game = nullptr;
 
 	game = new Game();
 
-	game->init("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
+	game->init("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000, 800, false);
 
 	while (game->running())
 	{
@@ -20,11 +20,11 @@ int main()
 	}
 
 	game->clean();
-	*/
+	
 
 
 
-
+	/*
 	cBoard game;
 	game.printBoard();
 	cout << endl << game.get_aPieces() << endl << game.get_pPieces() << endl;
@@ -54,6 +54,7 @@ int main()
 	game.printBoard();
 
 	cout << endl << game.get_aPieces() << endl << game.get_pPieces() << endl;
+	*/
 
 	return 0;
 }
