@@ -23,7 +23,7 @@
     <ProjectGuid>{E35D7710-45F6-47D6-BC83-FB3FBB37DFA1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MiniCheckers</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
