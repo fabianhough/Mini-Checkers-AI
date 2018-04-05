@@ -33,7 +33,7 @@ void playCheckers()
 			cout << "Invalid play" << endl;
 		}
 		game->render(cgame);
-
+		
 
 		//Remove when adding AI
 		while (!playerMove(false, cgame, game))	//AI Player Move
