@@ -21,7 +21,8 @@ public:
 	void handleEvents();
 	void mouseSelect(int &x, int &y);
 	void update();
-	void render(cBoard cgame);
+	void render(cBoard *cgame);
+	void renderMoves(cBoard *cgame, bool player, int x, int y);
 	void clean();
 
 	bool running() { return isRunning; }
