@@ -40,3 +40,25 @@ Not Started
 4. Test complete program
   - Make sure it works with maximum difficulty
   - Add in variable difficulty (possibly changing either utility values, or maximum depth)
+  
+  Temporary Notes on Utility/Evaluation Function:
+  Utility Function
+- Based on how many pieces left - other player pieces left
+6 pieces total per player
+(-)6 - (+)6 => possible values
+(-)6 = Total loss for Max
+0    = Draw
+(+)6 = Total win for Max
+
+Eval function could just be utility function
+
+Possibly look into how far away pieces are from the edge
+
+Or look into how many pieces are still "behind enemy lines"
+If this is the case, possibly have a 2 point system
+(-)12 - (+)12
+2 points for piece that has "made" it
+1 point for piece that is still behind enemies
+
+Can compare by swapping util functions
+Need function to count how many pieces still need to get to other side
