@@ -23,15 +23,15 @@ Not Started
   - ~~Moving Pieces~~
     - ~~Single move, and jump moves~~
     - ~~Check to see if valid move~~
-    - Possibly return a boolean to indicate if it is a valid move? -> would be useful for AI
+    - ~~Possibly return a boolean to indicate if it is a valid move? -> would be useful for AI~~
   - *Check if game ended/who won*
     - Potentially add utility value function here, based on number of pieces left
   - ~~Count Pieces for both players~~
-2. *Add GUI*
+2. ~~*Add GUI*~~
   - ~~Research SFML
     https://www.sfml-dev.org/~~
-  - *Research, learn, and download SDL2*
-  - Point and Click functionality, should check that clicking on valid piece
+  - ~~*Research, learn, and download SDL2*~~
+  - ~~Point and Click functionality, should check that clicking on valid piece~~
   - NOTE: Spend no more than one day on this, just make sure it works
 3. Program and Test Alpha-Beta Pruning Algorithm
   - Use algorithm on simpler case
