@@ -9,6 +9,8 @@ public:
 	cBoard();
 	~cBoard();
 
+	char** get_board();
+	char get_index(int i, int j);
 	int get_pPieces();
 	int get_aPieces();
 

@@ -1,6 +1,12 @@
 #include "Game.h"
+#include "TextureManager.h"
+
+SDL_Texture* boardTex;
+SDL_Texture* playerPieceTex;
+SDL_Texture* AIPieceTex;
 
 
+SDL_Rect** destRA;
 
 
 Game::Game()
@@ -40,9 +46,26 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else
 		isRunning = false;
 
-	SDL_Surface* tempSurface = IMG_Load("assets/cboard.jpg");
-	boardTex = SDL_CreateTextureFromSurface(renderer, tempSurface);
-	SDL_FreeSurface(tempSurface);
+	boardTex = TextureManager::LoadTexture("assets/cboard.png", renderer);
+	playerPieceTex = TextureManager::LoadTexture("assets/BlackPiece.png", renderer);
+	AIPieceTex = TextureManager::LoadTexture("assets/WhitePiece.png", renderer);
+
+
+	destRA = new SDL_Rect*[6];
+	for (int i = 0; i < 6; i++)
+		destRA[i] = new SDL_Rect[6];
+
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			destRA[i][j].w = 120;
+			destRA[i][j].h = 120;
+			destRA[i][j].x = j*120;
+			destRA[i][j].y = i*120;
+		}
+	}
+	
 
 }
 
@@ -61,19 +84,53 @@ void Game::handleEvents()
 	}
 }
 
-void Game::update()
+void Game::mouseSelect(int &x, int &y)
 {
+	SDL_Event event;
+	while (1)
+	{
+		SDL_PollEvent(&event);
 
+		if (event.type == SDL_MOUSEBUTTONDOWN)
+		{
+			int tempx, tempy;
+			SDL_GetMouseState(&tempx, &tempy);
+
+			x = tempx / 120;
+			y = tempy / 120;
+
+			break;
+		}
+		else if (event.type == SDL_QUIT)
+		{
+			isRunning = false;
+			break;
+		}
+	}
 }
 
-void Game::render()
+void Game::update()
+{
+	
+}
+
+void Game::render(cBoard cgame)
 {
 	SDL_RenderClear(renderer);
 	//Add things to render
 	SDL_RenderCopy(renderer, boardTex, NULL, NULL);
 
-
-
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			if (cgame.get_index(i, j) == 'B')
+				SDL_RenderCopy(renderer, playerPieceTex, NULL, &destRA[i][j]);
+			else if (cgame.get_index(i, j) == 'W')
+				SDL_RenderCopy(renderer, AIPieceTex, NULL, &destRA[i][j]);
+		}
+	}
+	
 	SDL_RenderPresent(renderer);
 }
 

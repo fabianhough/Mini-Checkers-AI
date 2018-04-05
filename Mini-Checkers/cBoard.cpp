@@ -68,6 +68,16 @@ cBoard::~cBoard()
 	delete[] board;
 }
 
+char** cBoard::get_board()
+{
+	return board;
+}
+
+char cBoard::get_index(int i, int j)
+{
+	return board[i][j];
+}
+
 int cBoard::get_pPieces() 
 {
 	return pPieces;
@@ -88,11 +98,7 @@ void cBoard::printBoard()
 }
 
 void cBoard::movePiece(bool player, int x, int y, int newx, int newy) {
-	if (player) 
-	{	//Adjusts Player position
-		y = 5 - y;
-		newy = 5 - newy;
-	}
+
 
 	if (validMove(player, x, y, newx, newy)) 
 	{
