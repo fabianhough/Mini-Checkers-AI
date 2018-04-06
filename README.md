@@ -18,14 +18,14 @@ Not Started
 1. Develop General Checkers Class
   - ~~Create cBoard class~~
   - ~~Constructor~~
-  - Copy Constructor
+  - ~~Copy Constructor~~
   - ~~Destructor~~
   - ~~Moving Pieces~~
     - ~~Single move, and jump moves~~
     - ~~Check to see if valid move~~
     - ~~Possibly return a boolean to indicate if it is a valid move? -> would be useful for AI~~
-  - *Check if game ended/who won*
-    - Potentially add utility value function here, based on number of pieces left
+  - ~~*Check if game ended/who won*~~
+    - ~~Potentially add utility value function here, based on number of pieces left~~
   - ~~Count Pieces for both players~~
 2. ~~*Add GUI*~~
   - ~~Research SFML
