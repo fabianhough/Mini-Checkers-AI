@@ -30,17 +30,29 @@ void playCheckers()
 		game->update();
 		game->render(cgame);
 
-		while (!playerMove(true, cgame, game))	//Human Player Move
+		if (cgame->availMoves(true))
 		{
-			cout << "Invalid play" << endl;
+			while (!playerMove(true, cgame, game))	//Human Player Move
+			{
+				cout << "Invalid play" << endl;
+			}
+			cout << "Current utility:\t" << cgame->utilEval() << endl << endl;
+			game->render(cgame);
 		}
-		game->render(cgame);
+		else
+			cout << "Player Move Forfeited, No Moves Available!" << endl;
 		
-		//Remove when adding AI
-		while (!playerMove(false, cgame, game))	//AI Player Move
+		if (cgame->availMoves(false))
 		{
-			cout << "Invalid play" << endl;
+			//Remove when adding AI
+			while (!playerMove(false, cgame, game))	//AI Player Move
+			{
+				cout << "Invalid play" << endl;
+			}
+			cout << "Current utility:\t" << cgame->utilEval() << endl << endl;
 		}
+		else
+			cout << "AI Move Forfeited, No Moves Available!" << endl;
 	}
 
 	game->clean();

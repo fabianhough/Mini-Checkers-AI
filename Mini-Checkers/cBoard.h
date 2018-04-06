@@ -20,5 +20,7 @@ public:
 	bool validMove(bool player, int x, int y, int newx, int newy);
 	void countPieces();
 	int isEnd();
+	int utilEval();
+	bool availMoves(bool player);
 };
 
