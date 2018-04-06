@@ -22,6 +22,8 @@ void playCheckers()
 
 	game->init("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 720, false);
 
+	//Ask if player wants to move first or second
+
 	while (game->running())
 	{
 		//game->handleEvents();

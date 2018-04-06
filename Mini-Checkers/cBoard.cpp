@@ -124,10 +124,16 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 		return false;
 	//Checks to see if move is within bounds
 	//Additionally checks jump conditions
-	else if (((newx != x + 1) && (newx != x - 1) && (newx != x + 2) && (newx != x - 2))
-		|| (!player && (newy != y + 1) && (newy != y + 2))	//Make sure not accept x mv 1, y mv 2
-		|| (player && (newy != y - 1) && (newy != y - 2)))
+	else if (((abs(newx - x) != 1) && (abs(newx - x) != 2))
+		|| (abs(newy - y) != 1) && (abs(newy - y) != 2))
 		return false;
+	//Checks if player is moving in the right direction
+	else if ((player && ((newy - y) > 0)) || (!player && ((newy - y) < 0)))
+		return false;
+	//Checks to see if trying to make a single move when a jump move is possible
+	else if ((abs(newy - y) == 1)
+		&& (validMove(player, x, y, x + 2, 2 * newy - y) || validMove(player, x, y, x - 2, 2 * newy - y)))
+			return false;
 	//Checks if it is a jump
 	else if (abs(newy - y) == 2) 
 	{
@@ -135,6 +141,7 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 		int remy = (newy + y) / 2;
 		if ((board[remy][remx] == board[y][x]) || (board[remy][remx] == EMPTY_CHAR))
 		{	//Checks to see if jumping over own piece or empty space
+			//Statement also checks to see if making invalid move (i.e. x + 1, y + 2)
 			return false;
 		}
 	}
