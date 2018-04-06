@@ -28,11 +28,11 @@ cBoard::cBoard()
 {
 	board = new char*[6];
 	char piece;
-	for (int i = 0; i < 6; i++)
-		board[i] = new char[6];
 
 	for (int i = 0; i < 6; i++) 
 	{
+		board[i] = new char[6];
+
 		if (i <= 1)
 			piece = AI_PIECE;
 		else if (i >= 4)
@@ -68,21 +68,31 @@ cBoard::~cBoard()
 	delete[] board;
 }
 
-char** cBoard::get_board()
+cBoard::cBoard(const cBoard &rhs) {
+	board = new char*[6];
+	for (int i = 0; i < 6; i++)
+	{
+		board[i] = new char[6];
+		for (int j = 0; j < 6; j++)
+			board[i][j] = rhs.get_index(i, j);
+	}
+}
+
+char** cBoard::get_board() const
 {
 	return board;
 }
 
-char cBoard::get_index(int i, int j)
+char cBoard::get_index(int i, int j) const
 {
 	return board[i][j];
 }
 
-int cBoard::get_pPieces() 
+int cBoard::get_pPieces() const
 {
 	return pPieces;
 }
-int cBoard::get_aPieces() 
+int cBoard::get_aPieces() const
 {
 	return aPieces;
 }

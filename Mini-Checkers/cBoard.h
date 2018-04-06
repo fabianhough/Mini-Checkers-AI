@@ -8,11 +8,12 @@ private:
 public:
 	cBoard();
 	~cBoard();
+	cBoard(const cBoard &lhs);
 
-	char** get_board();
-	char get_index(int i, int j);
-	int get_pPieces();
-	int get_aPieces();
+	char** get_board() const;
+	char get_index(int i, int j) const;
+	int get_pPieces() const;
+	int get_aPieces() const;
 
 	void printBoard();
 	void movePiece(bool player, int x, int y, int newx, int newy);

@@ -101,12 +101,14 @@ void Game::mouseSelect(int &x, int &y)
 			x = tempx / 120;
 			y = tempy / 120;
 
-			break;
+			return;
 		}
 		else if (event.type == SDL_QUIT)
 		{
 			isRunning = false;
-			break;
+			clean();
+			exit(0);
+			return;
 		}
 	}
 }
