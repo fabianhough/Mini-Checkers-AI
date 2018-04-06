@@ -152,8 +152,11 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 		return false;
 
 	//Checks to see if trying to make a single move when a jump move is possible
-	else if ((abs(newy - y) == 1)
+	/*else if ((abs(newy - y) == 1)
 		&& (validMove(player, x, y, x + 2, 2 * newy - y) || validMove(player, x, y, x - 2, 2 * newy - y)))
+		return false;*/
+
+	else if ((abs(newy - y) == 1) && availJump(player))
 		return false;
 
 	//Checks if it is a jump
@@ -191,30 +194,12 @@ void cBoard::countPieces()
 	aPieces = tempA;
 }
 
-int cBoard::isEnd()
+bool cBoard::isEnd()
 {
-	if (pPieces == 0)
-		return 1;
-	else if (aPieces == 0)
-		return -1;
+	if (!availMoves(true) && !availMoves(false))
+		return true;
 	else
-	{
-		int temp = 0;
-		for (int i = 0; i < 6; i++)
-		{
-			for (int j = 0; j < 6; j++)
-			{
-
-			}
-		}
-
-
-
-	}
-
-
-
-	return 0;
+		return false;
 }
 
 int cBoard::utilEval()
@@ -296,9 +281,35 @@ bool cBoard::availMoves(bool player)
 				if (validMove(player, j, i, posxl, posy1) || validMove(player, j, i, posxr, posy1)
 					|| validMove(player, j, i, posxl2, posy2) || validMove(player, j, i, posxr2, posy2))
 					return true;
-
 			}
 
+		}
+	}
+
+	return false;
+}
+
+bool cBoard::availJump(bool player)
+{
+	char piece;
+	if (player)
+		piece = PLAYER_PIECE;
+	else
+		piece = AI_PIECE;
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			if (board[i][j] == piece)
+			{
+				int newi;
+				if (player)
+					newi = i - 2;
+				else
+					newi = i + 2;
+				if (validMove(player, j, i, j - 2, newi) || validMove(player, j, i, j + 2, newi))
+					return true;
+			}
 		}
 	}
 

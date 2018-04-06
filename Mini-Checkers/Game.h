@@ -23,6 +23,7 @@ public:
 	void update();
 	void render(cBoard *cgame);
 	void renderMoves(cBoard *cgame, bool player, int x, int y);
+	void renderJumps(cBoard *cgame, bool player);
 	void clean();
 
 	bool running() { return isRunning; }

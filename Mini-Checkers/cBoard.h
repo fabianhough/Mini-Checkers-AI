@@ -19,8 +19,9 @@ public:
 	void movePiece(bool player, int x, int y, int newx, int newy);
 	bool validMove(bool player, int x, int y, int newx, int newy);
 	void countPieces();
-	int isEnd();
+	bool isEnd();
 	int utilEval();
 	bool availMoves(bool player);
+	bool availJump(bool player);
 };
 

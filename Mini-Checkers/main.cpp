@@ -32,8 +32,10 @@ void playCheckers()
 
 		if (cgame->availMoves(true))
 		{
+			game->renderJumps(cgame, true);
 			while (!playerMove(true, cgame, game))	//Human Player Move
 			{
+				game->renderJumps(cgame, true);
 				cout << "Invalid play" << endl;
 			}
 			cout << "Current utility:\t" << cgame->utilEval() << endl << endl;
@@ -45,14 +47,30 @@ void playCheckers()
 		if (cgame->availMoves(false))
 		{
 			//Remove when adding AI
+			game->renderJumps(cgame, false);
 			while (!playerMove(false, cgame, game))	//AI Player Move
 			{
+				game->renderJumps(cgame, false);
 				cout << "Invalid play" << endl;
 			}
 			cout << "Current utility:\t" << cgame->utilEval() << endl << endl;
 		}
 		else
 			cout << "AI Move Forfeited, No Moves Available!" << endl;
+
+		if (cgame->isEnd())
+		{
+			cout << endl << endl << "Game Finished" << endl;
+			int result = cgame->utilEval();
+			if (result > 0)
+				cout << "AI Won!" << endl;
+			else if (result < 0)
+				cout << "Player Won!" << endl;
+			else
+				cout << "Draw!" << endl;
+			
+			break;
+		}
 	}
 
 	game->clean();

@@ -5,6 +5,7 @@ SDL_Texture* boardTex;
 SDL_Texture* playerPieceTex;
 SDL_Texture* AIPieceTex;
 SDL_Texture* validSpaceTex;
+SDL_Texture* jumpSpaceTex;
 
 
 SDL_Rect** destRA;
@@ -51,6 +52,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	playerPieceTex = TextureManager::LoadTexture("assets/BlackPiece.png", renderer);
 	AIPieceTex = TextureManager::LoadTexture("assets/WhitePiece.png", renderer);
 	validSpaceTex = TextureManager::LoadTexture("assets/ValidSquare.png", renderer);
+	jumpSpaceTex = TextureManager::LoadTexture("assets/JumpSquare.png", renderer);
 
 
 	destRA = new SDL_Rect*[6];
@@ -177,6 +179,42 @@ void Game::renderMoves(cBoard *cgame, bool player, int x, int y)
 	{
 		for (int j = 0; j < 6; j++)
 		{
+			if (cgame->get_index(i, j) == 'B')
+				SDL_RenderCopy(renderer, playerPieceTex, NULL, &destRA[i][j]);
+			else if (cgame->get_index(i, j) == 'W')
+				SDL_RenderCopy(renderer, AIPieceTex, NULL, &destRA[i][j]);
+		}
+	}
+
+	SDL_RenderPresent(renderer);
+}
+
+void Game::renderJumps(cBoard *cgame, bool player)
+{
+	SDL_RenderClear(renderer);
+	//Add things to render
+	SDL_RenderCopy(renderer, boardTex, NULL, NULL);
+
+	int newi;
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			if (player)
+				newi = i - 2;
+			else
+				newi = i + 2;
+			if (cgame->validMove(player, j, i, j - 2, newi))
+			{
+				SDL_RenderCopy(renderer, jumpSpaceTex, NULL, &destRA[i][j]);
+				SDL_RenderCopy(renderer, jumpSpaceTex, NULL, &destRA[newi][j - 2]);
+			}
+			if (cgame->validMove(player, j, i, j + 2, newi))
+			{
+				SDL_RenderCopy(renderer, jumpSpaceTex, NULL, &destRA[i][j]);
+				SDL_RenderCopy(renderer, jumpSpaceTex, NULL, &destRA[newi][j + 2]);
+			}
+
 			if (cgame->get_index(i, j) == 'B')
 				SDL_RenderCopy(renderer, playerPieceTex, NULL, &destRA[i][j]);
 			else if (cgame->get_index(i, j) == 'W')
