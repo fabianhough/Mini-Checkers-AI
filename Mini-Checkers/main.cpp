@@ -3,15 +3,21 @@
 #include "Game.h"
 using namespace std;
 
-#define CUTOFF 50;
+#define CUTOFF 10
+
+int maxLevel = 0;
+int totalNodes = 0;
+int maxPrune = 0;
+int minPrune = 0;
 
 void playCheckers();
 bool playerMove(bool player, cBoard *cgame, Game* game);
 
+void ABSearch(cBoard* &cgame);
+int maxValue(cBoard* cgame, int alpha, int beta, int level);
+int minValue(cBoard* cgame, int alpha, int beta, int level);
 
-int maxValue(cBoard* cgame, int alpha, int beta);
-int minValue(cBoard* cgame, int alpha, int beta);
-
+void AIStats();
 void test(cBoard* cgame, bool player);
 
 int main() 
@@ -40,13 +46,11 @@ void playCheckers()
 		if (cgame->availMoves(true))
 		{
 			game->renderJumps(cgame, true);
-			test(cgame, true);
 			while (!playerMove(true, cgame, game))	//Human Player Move
 			{
 				game->renderJumps(cgame, true);
 				cout << "Invalid play" << endl;
 			}
-			cout << "Current utility:\t" << cgame->utilEval() << endl << endl;
 			game->render(cgame);
 		}
 		else
@@ -54,15 +58,10 @@ void playCheckers()
 		
 		if (cgame->availMoves(false))
 		{
-			//Remove when adding AI
-			game->renderJumps(cgame, false);
-			test(cgame, false);
-			while (!playerMove(false, cgame, game))	//AI Player Move
-			{
-				game->renderJumps(cgame, false);
-				cout << "Invalid play" << endl;
-			}
-			cout << "Current utility:\t" << cgame->utilEval() << endl << endl;
+			cout << "AI is thinking..." << endl;
+			ABSearch(cgame);
+			AIStats();
+			game->render(cgame);
 		}
 		else
 			cout << "AI Move Forfeited, No Moves Available!" << endl;
@@ -130,29 +129,88 @@ bool playerMove(bool player, cBoard *cgame, Game* game)
 }
 
 
-cBoard* ABSearch(cBoard* cgame)
+void ABSearch(cBoard* &cgame)
 {
-	return cgame;
+	maxLevel = 0;
+	totalNodes = 1;
+	maxPrune = 0;
+	minPrune = 0;
+
+	int v = maxValue(cgame, -12, 12, 0);
+	cBoard* temp = new cBoard(cgame->get_next());
+	delete cgame;
+	cgame = temp;
 }
 
-int maxValue(cBoard* cgame, int alpha, int beta)
+int maxValue(cBoard* cgame, int alpha, int beta, int level)
 {
-	if (cgame->isEnd())
-		return cgame->get_util();
+	totalNodes++;
+	if (cgame->isEnd() || (level == CUTOFF))
+		return cgame->utilEval();
+
+	maxLevel = level;
+	cout << level << endl;
 	int v = -12;
-
-
+	int cmp;
+	queue<cBoard*> actions;
+	cgame->genActions(false, actions);
+	cBoard* temp;
+	while (!actions.empty())
+	{
+		temp = actions.front();
+		cmp = minValue(temp, alpha, beta, level + 1);
+		temp->del_next();
+		if (cmp > v)
+		{
+			v = cmp;
+			cgame->set_next(temp);
+		}
+		actions.pop();
+		if (v >= beta)
+		{
+			maxPrune++;
+			return v;
+		}
+		
+		if (v > alpha)
+			alpha = v;
+	}
 	return v;
 }
 
-int minValue(cBoard* cgame, int alpha, int beta)
+int minValue(cBoard* cgame, int alpha, int beta, int level)
 {
-	if (cgame->isEnd())
-		return cgame->get_util();
+	totalNodes++;
+	if (cgame->isEnd() || (level == CUTOFF))
+		return cgame->utilEval();
+
+	maxLevel = level;
+	cout << level << endl;
 	int v = 12;
+	int cmp;
+	queue<cBoard*> actions;
+	cgame->genActions(true, actions);
+	cBoard* temp;
+	while (!actions.empty())
+	{
+		temp = actions.front();
+		cmp = maxValue(temp, alpha, beta, level + 1);
+		temp->del_next();
+		if (cmp < v)
+		{
+			v = cmp;
+			cgame->set_next(temp);
+		}
+		actions.pop();
+		if (v <= alpha)
+		{
+			minPrune++;
+			return v;
+		}
 
-
-
+		if (v < beta)
+			beta = v;
+	}
 	return v;
 }
 
@@ -170,4 +228,13 @@ void test(cBoard* cgame, bool player) {
 		cout << endl;
 		actions.pop();
 	}
+}
+
+void AIStats() 
+{
+	cout << endl << "AI Statistics:" << endl;
+	cout << "Max Depth:\t" << maxLevel << endl;
+	cout << "Total Nodes:\t" << totalNodes << endl;
+	cout << "Max Prune:\t" << maxPrune << endl;
+	cout << "Min Prune:\t" << minPrune << endl;
 }

@@ -68,6 +68,7 @@ cBoard::~cBoard()
 	for (int i = 0; i < 6; i++)
 		delete[] board[i];
 	delete[] board;
+	delete next;
 }
 
 cBoard::cBoard(const cBoard* rhs) 
@@ -115,11 +116,25 @@ bool cBoard::get_end() const
 	return endGame;
 }
 
+cBoard* cBoard::get_next() const
+{
+	return next;
+}
+
 void cBoard::set_util(int newutil)
 {
 	util = newutil;
 }
 
+void cBoard::set_next(cBoard* newnext)
+{
+	next = new cBoard(newnext);
+}
+
+void cBoard::del_next()
+{
+	delete next;
+}
 
 void cBoard::printBoard() 
 {
@@ -269,7 +284,6 @@ int cBoard::utilEval()
 		endGame = true;
 
 	value = ((2 * aPieces - aBehind) - (2 * pPieces - pBehind));
-	util = value;
 
 	return value;
 }

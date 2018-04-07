@@ -108,7 +108,7 @@ void Game::mouseSelect(int &x, int &y)
 		{
 			isRunning = false;
 			clean();
-			exit(0);
+			//exit(0);
 			return;
 		}
 	}

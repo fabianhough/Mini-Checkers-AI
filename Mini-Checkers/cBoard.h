@@ -10,6 +10,7 @@ private:
 	int aPieces;
 
 	int util;
+	cBoard* next;
 	bool endGame;
 public:
 	cBoard();
@@ -22,8 +23,11 @@ public:
 	int get_aPieces() const;
 	int get_util() const;
 	bool get_end() const;
+	cBoard* get_next() const;
 
 	void set_util(int newutil);
+	void set_next(cBoard* newnext);
+	void del_next();
 
 	void printBoard();
 	void movePiece(bool player, int x, int y, int newx, int newy);
