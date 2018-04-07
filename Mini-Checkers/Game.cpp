@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "TextureManager.h"
 
 SDL_Texture* boardTex;
 SDL_Texture* playerPieceTex;

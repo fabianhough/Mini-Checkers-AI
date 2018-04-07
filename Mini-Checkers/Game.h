@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "cBoard.h"
+#include "TextureManager.h"
 #undef main
 
 class Game

@@ -1,11 +1,9 @@
 #include "cBoard.h"
-#include <iostream>
-using namespace std;
 
-const char BLANK_CHAR = '_';
-const char EMPTY_CHAR = '-';
-const char AI_PIECE = 'W';
-const char PLAYER_PIECE = 'B';
+#define BLANK_CHAR '_'
+#define EMPTY_CHAR '-'
+#define AI_PIECE 'W'
+#define PLAYER_PIECE 'B'
 
 /* 
 Things to finish:
@@ -30,6 +28,8 @@ cBoard::cBoard()
 	char piece;
 	pPieces = 6;
 	aPieces = 6;
+	util = 0;
+	endGame = false;
 
 	for (int i = 0; i < 6; i++) 
 	{
@@ -70,17 +70,19 @@ cBoard::~cBoard()
 	delete[] board;
 }
 
-cBoard::cBoard(const cBoard &rhs) 
+cBoard::cBoard(const cBoard* rhs) 
 {
 	board = new char*[6];
 	for (int i = 0; i < 6; i++)
 	{
 		board[i] = new char[6];
 		for (int j = 0; j < 6; j++)
-			board[i][j] = rhs.get_index(i, j);
+			board[i][j] = rhs->get_index(i, j);
 	}
-	pPieces = rhs.get_pPieces();
-	aPieces = rhs.get_aPieces();
+	pPieces = rhs->get_pPieces();
+	aPieces = rhs->get_aPieces();
+	util = rhs->get_util();
+	endGame = rhs->get_end();
 }
 
 char** cBoard::get_board() const
@@ -97,18 +99,35 @@ int cBoard::get_pPieces() const
 {
 	return pPieces;
 }
+
 int cBoard::get_aPieces() const
 {
 	return aPieces;
 }
+
+int cBoard::get_util() const
+{
+	return util;
+}
+
+bool cBoard::get_end() const
+{
+	return endGame;
+}
+
+void cBoard::set_util(int newutil)
+{
+	util = newutil;
+}
+
 
 void cBoard::printBoard() 
 {
 	for (int i = 0; i < 6; i++) 
 	{
 		for (int j = 0; j < 6; j++)
-			cout << board[i][j];
-		cout << endl;
+			std::cout << board[i][j];
+		std::cout << std::endl;
 	}
 }
 
@@ -131,9 +150,18 @@ board[newy][newx] = piece;	//Sets piece at new location
 }
 
 bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
-	//Checks to see if coord is in board, or is invalid piece
-	if ((x >= 6) || (x < 0) || (y >= 6) || (y < 0)
-		|| (board[y][x] == EMPTY_CHAR) || (board[y][x] == BLANK_CHAR))
+	char piece;
+	if (player)
+		piece = PLAYER_PIECE;
+	else
+		piece = AI_PIECE;
+
+	//Checks to see if coord is in board
+	if ((x >= 6) || (x < 0) || (y >= 6) || (y < 0))
+		return false;
+
+	//Check to see if piece selected matches player
+	else if (board[y][x] != piece)
 		return false;
 
 	//Checks for new location validity
@@ -150,11 +178,6 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 	//Checks if player is moving in the right direction
 	else if ((player && ((newy - y) > 0)) || (!player && ((newy - y) < 0)))
 		return false;
-
-	//Checks to see if trying to make a single move when a jump move is possible
-	/*else if ((abs(newy - y) == 1)
-		&& (validMove(player, x, y, x + 2, 2 * newy - y) || validMove(player, x, y, x - 2, 2 * newy - y)))
-		return false;*/
 
 	else if ((abs(newy - y) == 1) && availJump(player))
 		return false;
@@ -196,7 +219,7 @@ void cBoard::countPieces()
 
 bool cBoard::isEnd()
 {
-	if (!availMoves(true) && !availMoves(false))
+	if (endGame || (!availMoves(true) && !availMoves(false)))
 		return true;
 	else
 		return false;
@@ -209,7 +232,7 @@ int cBoard::utilEval()
 	int pLine = 0, aLine = 5;
 	bool pFlag = false, aFlag = false;
 
-	while (pLine <= aLine)
+	while (pLine < 6)
 	{
 		for (int j = 0; j < 6; j++)
 		{
@@ -242,11 +265,15 @@ int cBoard::utilEval()
 		pLine++;
 		aLine--;
 	}
+	if ((pBehind == 0) && (aBehind == 0))
+		endGame = true;
 
 	value = ((2 * aPieces - aBehind) - (2 * pPieces - pBehind));
+	util = value;
 
 	return value;
 }
+
 
 bool cBoard::availMoves(bool player)
 {
@@ -314,4 +341,72 @@ bool cBoard::availJump(bool player)
 	}
 
 	return false;
+}
+
+
+void cBoard::genActions(bool player, std::queue <cBoard*>& actions)
+{
+	int posxl, posxr, posxl2, posxr2;
+	int posy1, posy2;
+	bool jump = availJump(player);
+	cBoard* temp;
+
+	char piece;
+	if (player)
+		piece = PLAYER_PIECE;
+	else
+		piece = AI_PIECE;
+
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			if (board[i][j] == piece)
+			{
+				if (jump)
+				{
+					if (player)
+						posy2 = i - 2;
+					else
+						posy2 = i + 2;
+					posxl2 = j - 2;
+					posxr2 = j + 2;
+
+					if (validMove(player, j, i, posxl2, posy2))
+					{
+						temp = new cBoard(this);
+						temp->movePiece(player, j, i, posxl2, posy2);
+						actions.push(temp);
+					}
+					if (validMove(player, j, i, posxr2, posy2))
+					{
+						temp = new cBoard(this);
+						temp->movePiece(player, j, i, posxr2, posy2);
+						actions.push(temp);
+					}
+				}
+				else
+				{
+					if (player)
+						posy1 = i - 1;
+					else
+						posy1 = i + 1;
+					posxl = j - 1;
+					posxr = j + 1;
+					if (validMove(player, j, i, posxl, posy1))
+					{
+						temp = new cBoard(this);
+						temp->movePiece(player, j, i, posxl, posy1);
+						actions.push(temp);
+					}
+					if (validMove(player, j, i, posxr, posy1))
+					{
+						temp = new cBoard(this);
+						temp->movePiece(player, j, i, posxr, posy1);
+						actions.push(temp);
+					}
+				}
+			}
+		}
+	}
 }

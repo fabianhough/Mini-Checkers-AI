@@ -3,13 +3,20 @@
 #include "Game.h"
 using namespace std;
 
+#define CUTOFF 50;
+
 void playCheckers();
 bool playerMove(bool player, cBoard *cgame, Game* game);
+
+
+int maxValue(cBoard* cgame, int alpha, int beta);
+int minValue(cBoard* cgame, int alpha, int beta);
+
+void test(cBoard* cgame, bool player);
 
 int main() 
 {
 	playCheckers();
-
 
 	return 0;
 }
@@ -33,6 +40,7 @@ void playCheckers()
 		if (cgame->availMoves(true))
 		{
 			game->renderJumps(cgame, true);
+			test(cgame, true);
 			while (!playerMove(true, cgame, game))	//Human Player Move
 			{
 				game->renderJumps(cgame, true);
@@ -48,6 +56,7 @@ void playCheckers()
 		{
 			//Remove when adding AI
 			game->renderJumps(cgame, false);
+			test(cgame, false);
 			while (!playerMove(false, cgame, game))	//AI Player Move
 			{
 				game->renderJumps(cgame, false);
@@ -117,5 +126,48 @@ bool playerMove(bool player, cBoard *cgame, Game* game)
 	{
 		cout << "Invalid Piece" << endl;
 		return false;
+	}
+}
+
+
+cBoard* ABSearch(cBoard* cgame)
+{
+	return cgame;
+}
+
+int maxValue(cBoard* cgame, int alpha, int beta)
+{
+	if (cgame->isEnd())
+		return cgame->get_util();
+	int v = -12;
+
+
+	return v;
+}
+
+int minValue(cBoard* cgame, int alpha, int beta)
+{
+	if (cgame->isEnd())
+		return cgame->get_util();
+	int v = 12;
+
+
+
+	return v;
+}
+
+void test(cBoard* cgame, bool player) {
+	queue<cBoard*> actions;
+
+	cgame->genActions(player, actions);
+
+	cBoard* temp;
+	int size = actions.size();
+	for (int i = 0; i < size; i++)
+	{
+		temp = actions.front();
+		temp->printBoard();
+		cout << endl;
+		actions.pop();
 	}
 }
