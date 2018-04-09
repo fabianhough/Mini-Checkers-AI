@@ -15,7 +15,7 @@ Not Started
 ~~Completed~~
 
 *Not necessarily in order
-1. Develop General Checkers Class
+1. ~~Develop General Checkers Class~~
   - ~~Create cBoard class~~
   - ~~Constructor~~
   - ~~Copy Constructor~~
@@ -33,13 +33,15 @@ Not Started
   - ~~*Research, learn, and download SDL2*~~
   - ~~Point and Click functionality, should check that clicking on valid piece~~
   - NOTE: Spend no more than one day on this, just make sure it works
-3. Program and Test Alpha-Beta Pruning Algorithm
-  - Use algorithm on simpler case
-  - Add in utility value checking, and depth-checking
-  - Limit depth of search, and code evaluation function
+3. ~~Program and Test Alpha-Beta Pruning Algorithm~~
+  - ~~Use algorithm on simpler case~~
+  - ~~Add in utility value checking, and depth-checking~~
+  - ~~Limit depth of search, and code evaluation function~~
 4. Test complete program
-  - Make sure it works with maximum difficulty
-  - Add in variable difficulty (possibly changing either utility values, or maximum depth)
+  - ~~Make sure it works with maximum difficulty~~
+  - ~~Add in variable difficulty (possibly changing either utility values, or maximum depth)~~
+  - Continue to test program, under different situations; Keep playing
+  - Find out what level equates to 15 seconds, or add timer function
   
   Temporary Notes on Utility/Evaluation Function:
   Utility Function
