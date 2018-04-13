@@ -1,16 +1,19 @@
 #include <iostream>
+#include <chrono>
 #include "cBoard.h"
 #include "Game.h"
 
 #define CUTOFF 10
 #define EASY 2
 #define MEDIUM 5
-#define HARD 10
+#define HARD 16
 
 int maxLevel = 0;
 int totalNodes = 0;
 int maxPrune = 0;
 int minPrune = 0;
+double timer = 0;
+double maxTime = 0;
 int cutoff = CUTOFF;
 bool ord = true;
 
@@ -141,7 +144,14 @@ void ABSearch(cBoard* &cgame)
 	maxPrune = 0;
 	minPrune = 0;
 
+	auto start = std::chrono::high_resolution_clock::now();
 	int v = maxValue(cgame, -12, 12, 0);
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> dur = stop - start;
+	timer = dur.count();
+	if (timer > maxTime)
+		maxTime = timer;
+
 	cBoard* temp = new cBoard(cgame->get_next());
 	delete cgame;
 	cgame = temp;
@@ -168,12 +178,20 @@ int maxValue(cBoard* cgame, int alpha, int beta, int level)
 		if (cmp > v)
 		{
 			v = cmp;
+			cgame->del_next();
 			cgame->set_next(temp);
 		}
+		delete temp;
 		actions.pop();
 		if (v >= beta)
 		{
 			maxPrune++;
+			while (!actions.empty())
+			{
+				temp = actions.front();
+				delete temp;
+				actions.pop();
+			}
 			return v;
 		}
 		
@@ -204,12 +222,20 @@ int minValue(cBoard* cgame, int alpha, int beta, int level)
 		if (cmp < v)
 		{
 			v = cmp;
+			cgame->del_next();
 			cgame->set_next(temp);
 		}
+		delete temp;
 		actions.pop();
 		if (v <= alpha)
 		{
 			minPrune++;
+			while (!actions.empty())
+			{
+				temp = actions.front();
+				delete temp;
+				actions.pop();
+			}
 			return v;
 		}
 
@@ -242,6 +268,9 @@ void AIStats()
 	std::cout << "Total Nodes:\t" << totalNodes << std::endl;
 	std::cout << "Max Prune:\t" << maxPrune << std::endl;
 	std::cout << "Min Prune:\t" << minPrune << std::endl;
+	std::cout << std::endl;
+	std::cout << "Time:\t\t" << timer / 1000 << " s" << std::endl;
+	std::cout << "Max Time:\t" << maxTime / 1000 << " s" << std::endl;
 }
 
 void playerTurn(cBoard* cgame, Game* game)

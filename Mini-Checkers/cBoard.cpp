@@ -30,6 +30,7 @@ cBoard::cBoard()
 	aPieces = 6;
 	util = 0;
 	endGame = false;
+	next = nullptr;
 
 	for (int i = 0; i < 6; i++) 
 	{
@@ -68,7 +69,8 @@ cBoard::~cBoard()
 	for (int i = 0; i < 6; i++)
 		delete[] board[i];
 	delete[] board;
-	delete next;
+	if (next != nullptr)
+		delete next;
 }
 
 cBoard::cBoard(const cBoard* rhs) 
@@ -84,6 +86,7 @@ cBoard::cBoard(const cBoard* rhs)
 	aPieces = rhs->get_aPieces();
 	util = rhs->get_util();
 	endGame = rhs->get_end();
+	next = nullptr;
 }
 
 char** cBoard::get_board() const
@@ -121,6 +124,7 @@ cBoard* cBoard::get_next() const
 	return next;
 }
 
+
 void cBoard::set_util(int newutil)
 {
 	util = newutil;
@@ -131,9 +135,11 @@ void cBoard::set_next(cBoard* newnext)
 	next = new cBoard(newnext);
 }
 
+
 void cBoard::del_next()
 {
 	delete next;
+	next = nullptr;
 }
 
 void cBoard::printBoard() 
