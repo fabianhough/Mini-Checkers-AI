@@ -6,7 +6,7 @@
 #define CUTOFF 10
 #define EASY 2
 #define MEDIUM 5
-#define HARD 16
+#define HARD 17
 
 int maxLevel = 0;
 int totalNodes = 0;
@@ -75,7 +75,7 @@ void playCheckers()
 		if (cgame->isEnd())
 		{
 			std::cout << std::endl << std::endl << "Game Finished" << std::endl;
-			int result = cgame->utilEval();
+			int result = cgame->eval();
 			if (result > 0)
 				std::cout << "AI Won!" << std::endl;
 			else if (result < 0)
@@ -161,8 +161,10 @@ int maxValue(cBoard* cgame, int alpha, int beta, int level)
 {
 	maxLevel = level;
 	totalNodes++;
-	if (cgame->isEnd() || (level == cutoff))
-		return cgame->utilEval();
+	if (cgame->isEnd())
+		return cgame->util();
+	if (level == cutoff)
+		return cgame->eval();
 
 	//std::cout << level << std::endl;
 	int v = -12;
@@ -205,8 +207,10 @@ int minValue(cBoard* cgame, int alpha, int beta, int level)
 {
 	maxLevel = level;
 	totalNodes++;
-	if (cgame->isEnd() || (level == cutoff))
-		return cgame->utilEval();
+	if (cgame->isEnd())
+		return cgame->util();
+	if (level == cutoff)
+		return cgame->eval();
 
 	//std::cout << level << std::endl;
 	int v = 12;

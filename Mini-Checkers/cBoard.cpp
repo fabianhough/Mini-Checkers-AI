@@ -28,7 +28,6 @@ cBoard::cBoard()
 	char piece;
 	pPieces = 6;
 	aPieces = 6;
-	util = 0;
 	endGame = false;
 	next = nullptr;
 
@@ -84,7 +83,6 @@ cBoard::cBoard(const cBoard* rhs)
 	}
 	pPieces = rhs->get_pPieces();
 	aPieces = rhs->get_aPieces();
-	util = rhs->get_util();
 	endGame = rhs->get_end();
 	next = nullptr;
 }
@@ -109,10 +107,6 @@ int cBoard::get_aPieces() const
 	return aPieces;
 }
 
-int cBoard::get_util() const
-{
-	return util;
-}
 
 bool cBoard::get_end() const
 {
@@ -122,12 +116,6 @@ bool cBoard::get_end() const
 cBoard* cBoard::get_next() const
 {
 	return next;
-}
-
-
-void cBoard::set_util(int newutil)
-{
-	util = newutil;
 }
 
 void cBoard::set_next(cBoard* newnext)
@@ -157,12 +145,17 @@ void cBoard::movePiece(bool player, int x, int y, int newx, int newy) {
 
 	if (this->validMove(player, x, y, newx, newy)) 
 	{
+		if (availJump(player))
+		{
+			if (abs(newy - y) != 2)
+				return;
+		}
 		if (abs(newy - y) == 2) //Checks if it is a jump
 			board[(newy + y) / 2][(newx + x) / 2] = EMPTY_CHAR;	//Removes 'jumped' piece
 		
 		char piece = board[y][x];	//Temporary placeholder for the piece
 		board[y][x] = EMPTY_CHAR;	//Removes piece at old location
-board[newy][newx] = piece;	//Sets piece at new location
+		board[newy][newx] = piece;	//Sets piece at new location
 	}
 
 	this->countPieces();
@@ -200,9 +193,6 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 	else if ((player && ((newy - y) > 0)) || (!player && ((newy - y) < 0)))
 		return false;
 
-	else if ((abs(newy - y) == 1) && availJump(player))
-		return false;
-
 	//Checks if it is a jump
 	else if (abs(newy - y) == 2)
 	{
@@ -216,8 +206,7 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 	}
 
 	//Returns true if valid move
-	else
-		return true;
+	return true;
 }
 
 void cBoard::countPieces()
@@ -240,13 +229,14 @@ void cBoard::countPieces()
 
 bool cBoard::isEnd()
 {
+	int temp = eval();
 	if (endGame || (!availMoves(true) && !availMoves(false)))
 		return true;
 	else
 		return false;
 }
 
-int cBoard::utilEval()
+int cBoard::eval()
 {
 	int value = 0;
 	int pBehind = 0, aBehind = 0;
@@ -292,6 +282,27 @@ int cBoard::utilEval()
 	value = ((2 * aPieces - aBehind) - (2 * pPieces - pBehind));
 
 	return value;
+}
+
+int cBoard::util()
+{
+	countPieces();
+
+	if (aPieces == 0)
+		return -12;
+	else if (pPieces == 0)
+		return 12;
+	else
+	{
+		if (aPieces > pPieces)
+			return 12;
+		else if (pPieces > aPieces)
+			return -12;
+		else
+			return 0;
+	}
+
+	return 0;
 }
 
 

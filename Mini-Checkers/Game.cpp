@@ -164,14 +164,20 @@ void Game::renderMoves(cBoard *cgame, bool player, int x, int y)
 	posxl2 = x - 2;
 	posxr2 = x + 2;
 
-	if (cgame->validMove(player, x, y, posxl, posy1))
-		SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy1][posxl]);
-	if (cgame->validMove(player, x, y, posxr, posy1))
-		SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy1][posxr]);
-	if (cgame->validMove(player, x, y, posxl2, posy2))
-		SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy2][posxl2]);
-	if (cgame->validMove(player, x, y, posxr2, posy2))
-		SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy2][posxr2]);
+	if (cgame->availJump(player))
+	{
+		if (cgame->validMove(player, x, y, posxl2, posy2))
+			SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy2][posxl2]);
+		if (cgame->validMove(player, x, y, posxr2, posy2))
+			SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy2][posxr2]);
+	}
+	else
+	{
+		if (cgame->validMove(player, x, y, posxl, posy1))
+			SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy1][posxl]);
+		if (cgame->validMove(player, x, y, posxr, posy1))
+			SDL_RenderCopy(renderer, validSpaceTex, NULL, &destRA[posy1][posxr]);
+	}
 
 
 	for (int i = 0; i < 6; i++)
