@@ -1,35 +1,32 @@
 #pragma once
 #include <iostream>
-#include "SDL.h"
-#include "SDL_image.h"
-#include "cBoard.h"
-#include "TextureManager.h"
+#include "SDL.h"				//SDL2 Header
+#include "SDL_image.h"			//Header for using images
+#include "cBoard.h"				//cBoard class
+#include "TextureManager.h"		//Engine image loader
 #undef main
 
+//Game Engine class
 class Game
 {
 private:
-	bool isRunning;
-	SDL_Window *window;
-	SDL_Renderer *renderer;
+	bool isRunning;				//Game state is currently running
+	SDL_Window *window;			//Game Engine window
+	SDL_Renderer *renderer;		//Game Engine renderer
 
 public:
-	Game();
-	~Game();
+	Game();		//Constructor
+	~Game();	//Destructor
 
-	void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
+	void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);	//Initializes Game Engine
 
-	void handleEvents();
-	void mouseSelect(int &x, int &y);
-	void update();
-	void render(cBoard *cgame);
-	void renderMoves(cBoard *cgame, bool player, int x, int y);
-	void renderJumps(cBoard *cgame, bool player);
-	void clean();
+	void mouseSelect(int &x, int &y);								//Allows player to select piece on board
 
-	bool running() { return isRunning; }
+	void render(cBoard *cgame);										//Renders the window
+	void renderMoves(cBoard *cgame, bool player, int x, int y);		//Renders the moves available to a selected piece
+	void renderJumps(cBoard *cgame, bool player);					//Renders all jump moves available
+	void clean();													//Cleans the Game Engine and window
 
-
-
+	bool running() { return isRunning; }							//Validates that the Game Engine is running
 };
 

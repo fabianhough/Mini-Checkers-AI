@@ -1,49 +1,43 @@
 #include "cBoard.h"
 
-#define BLANK_CHAR '_'
-#define EMPTY_CHAR '-'
-#define AI_PIECE 'W'
-#define PLAYER_PIECE 'B'
-
-/* 
-Things to finish:
-- Finish end condition checker
-- Add Utility value function
-- Add copy constructor
-- Add getter for board
-
-Goal: Complete coding for the entire checkers board
-Functionality needed:
-- Set up board
-- Copy board
-- Move pieces (in a valid way)
-- Check for Win conditions
-- Check for Utility Value -> can use win condition in Utility value function
-*/
+#define BLANK_CHAR '_'		//Invalid Space
+#define EMPTY_CHAR '-'		//Empty Space
+#define AI_PIECE 'W'		//AI Piece, White
+#define PLAYER_PIECE 'B'	//Player Piece, Black
 
 
+//Default constructor
+//Creates an initial game state
 cBoard::cBoard()
 {
-	board = new char*[6];
-	char piece;
-	pPieces = 6;
-	aPieces = 6;
-	endGame = false;
-	next = nullptr;
-
+	board = new char*[6];		//Setting up new board
+	char piece;					//Temporary Piece for player
+	pPieces = 6;				//Sets initial human player pieces
+	aPieces = 6;				//Sets initial AI player Pieces
+	endGame = false;			//Game is not terminal
+	next = nullptr;				//No next best move calculated
+	
+	//Initializes all pieces on the board
+	//Runs through line by line
 	for (int i = 0; i < 6; i++) 
 	{
-		board[i] = new char[6];
+		board[i] = new char[6];		
 
+		//Current line is at the top, AI Pieces
 		if (i <= 1)
 			piece = AI_PIECE;
+		//Current line is at the bottom, Human Pieces
 		else if (i >= 4)
 			piece = PLAYER_PIECE;
+		//Current line is neither, Empty Pieces
 		else
 			piece = EMPTY_CHAR;
 
+		//Runs through each horizontal location
 		for (int j = 0; j < 6; j++) 
 		{
+			//Places pieces depending on row/line, column, and current piece
+			//Fills the rest with invalid spaces
 			if (i % 2 == 0) {
 				if (j % 2 == 0)
 					board[i][j] = BLANK_CHAR;
@@ -59,77 +53,92 @@ cBoard::cBoard()
 			}
 		}
 	}
-	this->countPieces();
 }
 
-
+//Destructor
 cBoard::~cBoard()
 {
+	//Deletes each sub-array
 	for (int i = 0; i < 6; i++)
 		delete[] board[i];
-	delete[] board;
-	if (next != nullptr)
+	delete[] board;			//Deletes primary board array
+	if (next != nullptr)	//Deletes the next best cBoard if it isn't empty
 		delete next;
 }
 
+//Copy Constructor
 cBoard::cBoard(const cBoard* rhs) 
 {
-	board = new char*[6];
+	board = new char*[6];						//Initializes new board variable
 	for (int i = 0; i < 6; i++)
 	{
-		board[i] = new char[6];
-		for (int j = 0; j < 6; j++)
+		board[i] = new char[6];					//Creates the sub-array
+		for (int j = 0; j < 6; j++)				//Copies all values in sub-array
 			board[i][j] = rhs->get_index(i, j);
 	}
-	pPieces = rhs->get_pPieces();
+	pPieces = rhs->get_pPieces();				//Copies current piece numbers
 	aPieces = rhs->get_aPieces();
-	endGame = rhs->get_end();
-	next = nullptr;
+	endGame = rhs->get_end();					//Copies endgame status
+	next = nullptr;								//Sets next best action to null
 }
 
+
+//Getters
+
+//Returns board
 char** cBoard::get_board() const
 {
 	return board;
 }
 
+//Returns character at index
 char cBoard::get_index(int i, int j) const
 {
 	return board[i][j];
 }
 
+//Returns the amount of AI Pieces
 int cBoard::get_pPieces() const
 {
 	return pPieces;
 }
 
+//Returns the amount of human player Pieces
 int cBoard::get_aPieces() const
 {
 	return aPieces;
 }
 
-
+//Returns endgame status
 bool cBoard::get_end() const
 {
 	return endGame;
 }
 
+//Returns next best action cBoard
 cBoard* cBoard::get_next() const
 {
 	return next;
 }
 
+
+//Setters
+
+//Sets the next variable to the given cBoard
 void cBoard::set_next(cBoard* newnext)
 {
 	next = new cBoard(newnext);
 }
 
-
+//Deletes the next var
 void cBoard::del_next()
 {
 	delete next;
 	next = nullptr;
 }
 
+
+//Prints the board to the console
 void cBoard::printBoard() 
 {
 	for (int i = 0; i < 6; i++) 
@@ -140,31 +149,37 @@ void cBoard::printBoard()
 	}
 }
 
-void cBoard::movePiece(bool player, int x, int y, int newx, int newy) {
-
-
+//Moves a given players piece to given coordinates
+void cBoard::movePiece(bool player, int x, int y, int newx, int newy) 
+{
+	//Checks to see if the given move is valid
 	if (this->validMove(player, x, y, newx, newy)) 
 	{
+		//Checks to see if there are any jump moves available to current player
 		if (availJump(player))
 		{
+			//Returns if jump moves are available, but current move is not a jump move
 			if (abs(newy - y) != 2)
 				return;
 		}
-		if (abs(newy - y) == 2) //Checks if it is a jump
+		if (abs(newy - y) == 2)									//Checks if it is a jump
 			board[(newy + y) / 2][(newx + x) / 2] = EMPTY_CHAR;	//Removes 'jumped' piece
 		
-		char piece = board[y][x];	//Temporary placeholder for the piece
-		board[y][x] = EMPTY_CHAR;	//Removes piece at old location
-		board[newy][newx] = piece;	//Sets piece at new location
+		char piece = board[y][x];								//Temporary placeholder for the piece
+		board[y][x] = EMPTY_CHAR;								//Removes piece at old location
+		board[newy][newx] = piece;								//Sets piece at new location
 	}
 
-	this->countPieces();
+	this->countPieces();										//Counts all current pieces
 
 	return;
 }
 
+//Validates moves by a specific player
 bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
-	char piece;
+	char piece;		//Temporary comparison variable for the player piece
+
+	//Checks if it is AI or human player
 	if (player)
 		piece = PLAYER_PIECE;
 	else
@@ -209,6 +224,7 @@ bool cBoard::validMove(bool player, int x, int y, int newx, int newy) {
 	return true;
 }
 
+//Counts total amount of both players' pieces
 void cBoard::countPieces()
 {
 	int tempP = 0;
@@ -227,9 +243,11 @@ void cBoard::countPieces()
 	aPieces = tempA;
 }
 
+//Checks to see if end condition is met
 bool cBoard::isEnd()
 {
-	int temp = eval();
+	int temp = eval();		//Eval Function sets an end true in the running
+	//Returns true if endgame flag, or if no available moves for both sides
 	if (endGame || (!availMoves(true) && !availMoves(false)))
 		return true;
 	else
@@ -238,10 +256,11 @@ bool cBoard::isEnd()
 
 int cBoard::eval()
 {
-	int value = 0;
-	int pBehind = 0, aBehind = 0;
-	int pLine = 0, aLine = 5;
-	bool pFlag = false, aFlag = false;
+	int value = 0;							//Evaluation return value
+	int pBehind = 0, aBehind = 0;			//'Backline' of each player
+	int pLine = 0, aLine = 5;				//'Frontline' of each player
+	bool pFlag = false, aFlag = false;		//Flags to identify line locations
+
 
 	while (pLine < 6)
 	{

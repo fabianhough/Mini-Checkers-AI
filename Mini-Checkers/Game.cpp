@@ -72,20 +72,6 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
 }
 
-void Game::handleEvents()
-{
-	SDL_Event event;
-	SDL_PollEvent(&event);
-
-	switch (event.type)
-	{
-	case SDL_QUIT:
-		isRunning = false;
-		break;
-	default:
-		break;
-	}
-}
 
 void Game::mouseSelect(int &x, int &y)
 {
@@ -114,10 +100,6 @@ void Game::mouseSelect(int &x, int &y)
 	}
 }
 
-void Game::update()
-{
-	
-}
 
 void Game::render(cBoard *cgame)
 {
