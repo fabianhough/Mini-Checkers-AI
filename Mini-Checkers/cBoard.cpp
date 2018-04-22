@@ -254,18 +254,23 @@ bool cBoard::isEnd()
 		return false;
 }
 
+//Determines eval value for current board state, if not terminal
+//Awards 2 points to 'safe' pieces, and 1 point to pieces not safe yet
 int cBoard::eval()
 {
 	int value = 0;							//Evaluation return value
-	int pBehind = 0, aBehind = 0;			//'Backline' of each player
+	int pBehind = 0, aBehind = 0;			//'Backline' pieces of each player
 	int pLine = 0, aLine = 5;				//'Frontline' of each player
 	bool pFlag = false, aFlag = false;		//Flags to identify line locations
 
-
+	//Finds how many pieces are worth 1 point each
+	//Continues until reaches end of board
 	while (pLine < 6)
 	{
+		//Searches for unsafe human player pieces
 		for (int j = 0; j < 6; j++)
 		{
+			//Raises the flag if any AI pieces are found; AI frontline
 			if (!aFlag && (board[pLine][j] == AI_PIECE))
 			{
 				aFlag = true;
@@ -274,12 +279,14 @@ int cBoard::eval()
 			else if (aFlag)
 			{
 				if (board[pLine][j] == PLAYER_PIECE)
-						pBehind++;
+					pBehind++;
 			}
 		}
 
+		//Searches for unsafe AI pieces
 		for (int k = 0; k < 6; k++)
 		{
+			//Raises any flag if any human player pieces are found; Human Player frontline
 			if (!pFlag && (board[aLine][k] == PLAYER_PIECE))
 			{
 				pFlag = true;
@@ -292,69 +299,82 @@ int cBoard::eval()
 			}
 		}
 
-		pLine++;
+		pLine++;													//Moves both lines 'forward'
 		aLine--;
 	}
+
+	//Sets endgame condition based on lack of 'unsafe' pieces
 	if ((pBehind == 0) && (aBehind == 0))
 		endGame = true;
 
-	value = ((2 * aPieces - aBehind) - (2 * pPieces - pBehind));
+	value = ((2 * aPieces - aBehind) - (2 * pPieces - pBehind));	//Calculates the eval value
 
-	return value;
+	return value;													//Returns eval value
 }
 
+//Utility value for terminal states
 int cBoard::util()
 {
-	countPieces();
+	countPieces();						//Counts total number of pieces
 
+	//No AI pieces -> AI has lost
 	if (aPieces == 0)
 		return -12;
+	//No human player pieces -> human has lost
 	else if (pPieces == 0)
 		return 12;
+	//Draw condition
 	else
 	{
+		//AI has greater number of pieces
 		if (aPieces > pPieces)
 			return 12;
+		//Human has greater number of pieces
 		else if (pPieces > aPieces)
 			return -12;
+		//True draw if both have same number of pieces
 		else
 			return 0;
 	}
-
-	return 0;
 }
 
-
+//Checks to see if a given player has any available moves left on the current board
 bool cBoard::availMoves(bool player)
 {
-	int posxl, posxr, posxl2, posxr2;
-	int posy1, posy2;
+	int posxl, posxr, posxl2, posxr2;		//New x positions
+	int posy1, posy2;						//New y positions
+
+	//Runs through entire board
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
+			//Human Player Piece found
 			if (player && (board[i][j] == PLAYER_PIECE))
 			{
-				posy1 = i - 1;
+				posy1 = i - 1;				//Updates all new possible positions
 				posy2 = i - 2;
 				posxl = j - 1;
 				posxr = j + 1;
 				posxl2 = j - 2;
 				posxr2 = j + 2;
 
+				//Returns true if any moves are valid
 				if (validMove(player, j, i, posxl, posy1) || validMove(player, j, i, posxr, posy1)
 					|| validMove(player, j, i, posxl2, posy2) || validMove(player, j, i, posxr2, posy2))
 					return true;
 			}
+			//AI Piece found
 			else if (!player && (board[i][j] == AI_PIECE))
 			{
-				posy1 = i + 1;
+				posy1 = i + 1;				//Updates all new possible positions
 				posy2 = i + 2;
 				posxl = j - 1;
 				posxr = j + 1;
 				posxl2 = j - 2;
 				posxr2 = j + 2;
 
+				//Returns true if any moves are valid
 				if (validMove(player, j, i, posxl, posy1) || validMove(player, j, i, posxr, posy1)
 					|| validMove(player, j, i, posxl2, posy2) || validMove(player, j, i, posxr2, posy2))
 					return true;
@@ -363,71 +383,94 @@ bool cBoard::availMoves(bool player)
 		}
 	}
 
-	return false;
+	return false;							//Returns false if no valid moves found
 }
 
+//Checks to see if any jump moves are available for a given player
+//Jump moves MUST be taken, priority
 bool cBoard::availJump(bool player)
 {
-	char piece;
+	char piece;								//Variable for specific player
+
+	//Human player
 	if (player)
 		piece = PLAYER_PIECE;
+	//AI
 	else
 		piece = AI_PIECE;
+
+	//Runs through entire board
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
+			//Piece matches player
 			if (board[i][j] == piece)
 			{
-				int newi;
+				int newi;			//New y position
+
+				//Human
 				if (player)
 					newi = i - 2;
+				//AI
 				else
 					newi = i + 2;
+
+				//Returns true if valid jump move is found
 				if (validMove(player, j, i, j - 2, newi) || validMove(player, j, i, j + 2, newi))
 					return true;
 			}
 		}
 	}
 
-	return false;
+	return false;					//Returns false if no jump moves are found for player
 }
 
-
+//Generates queue of all possible moves a player can take
 void cBoard::genActions(bool player, std::queue <cBoard*>& actions)
 {
-	int posxl, posxr, posxl2, posxr2;
-	int posy1, posy2;
-	bool jump = availJump(player);
-	cBoard* temp;
+	int posxl, posxr, posxl2, posxr2;			//New x positions
+	int posy1, posy2;							//New y positions
+	bool jump = availJump(player);				//Checks for jump moves available
+	cBoard* temp;								//Temporary new board with new move executed
 
-	char piece;
+	char piece;									//Player piece
+
+	//Human
 	if (player)
 		piece = PLAYER_PIECE;
+	//AI
 	else
 		piece = AI_PIECE;
 
+	//Runs through entire board
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
+			//Valid matching piece found
 			if (board[i][j] == piece)
 			{
+				//Jump moves are available
 				if (jump)
 				{
+					//Human
 					if (player)
 						posy2 = i - 2;
+					//AI
 					else
 						posy2 = i + 2;
-					posxl2 = j - 2;
+					posxl2 = j - 2;				//New x positions are confirmed for jumping
 					posxr2 = j + 2;
 
+					//Jump in the left direction is valid
 					if (validMove(player, j, i, posxl2, posy2))
 					{
-						temp = new cBoard(this);
-						temp->movePiece(player, j, i, posxl2, posy2);
-						actions.push(temp);
+						temp = new cBoard(this);							//Creates copy of current board
+						temp->movePiece(player, j, i, posxl2, posy2);		//Executes valid move on new board
+						actions.push(temp);									//Adds board to queue
 					}
+					//Jump in the right direction is valid
 					if (validMove(player, j, i, posxr2, posy2))
 					{
 						temp = new cBoard(this);
@@ -435,20 +478,26 @@ void cBoard::genActions(bool player, std::queue <cBoard*>& actions)
 						actions.push(temp);
 					}
 				}
+				//No jump moves are available
 				else
 				{
+					//Human
 					if (player)
 						posy1 = i - 1;
+					//AI
 					else
 						posy1 = i + 1;
-					posxl = j - 1;
+					posxl = j - 1;				//New x positions, non-jump
 					posxr = j + 1;
+
+					//Jump in the left direction is valid
 					if (validMove(player, j, i, posxl, posy1))
 					{
 						temp = new cBoard(this);
 						temp->movePiece(player, j, i, posxl, posy1);
 						actions.push(temp);
 					}
+					//Jump in the right direction is valid
 					if (validMove(player, j, i, posxr, posy1))
 					{
 						temp = new cBoard(this);

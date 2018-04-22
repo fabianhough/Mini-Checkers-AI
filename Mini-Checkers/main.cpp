@@ -251,7 +251,7 @@ bool playerMove(bool player, cBoard *cgame, Game* game)
 void aiTurn(cBoard* &cgame, Game* game)
 {
 	//Only executes if there are any available moves from the AI
-	if (cgame->availMoves(false))
+	if (cgame->availMoves(false) && (cgame->isEnd() != true))
 	{
 		std::cout << std::endl << "AI is thinking..." << std::endl;
 		ABSearch(cgame);			//Executes the AB Search, and replaces cBoard with new one
@@ -314,7 +314,7 @@ int maxValue(cBoard* cgame, int alpha, int beta, int level)
 	cgame->genActions(false, actions);	//Generates all actions that Max can take
 	cBoard* temp;						//Temporary cBoard var for manipulation
 
-	//Continues until all actions explore, or pruned
+	//Continues until all actions explored, or pruned
 	while (!actions.empty())
 	{
 		temp = actions.front();								//Compares the front action in actions
@@ -377,7 +377,7 @@ int minValue(cBoard* cgame, int alpha, int beta, int level)
 	cgame->genActions(true, actions);	//Generates all actions that Min can take
 	cBoard* temp;						//Temporary cBoard var for manipulation
 
-	//Continues until all actions explore, or pruned
+	//Continues until all actions explored, or pruned
 	while (!actions.empty())
 	{
 		temp = actions.front();								//Compares the front action in actions
