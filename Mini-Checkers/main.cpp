@@ -272,7 +272,7 @@ void aiTurn(cBoard* &cgame, Game* game)
 void ABSearch(cBoard* &cgame)
 {
 	maxLevel = 0;		//Reset all AI statistics global variables
-	totalNodes = 1;
+	totalNodes = 0;
 	maxPrune = 0;
 	minPrune = 0;
 
