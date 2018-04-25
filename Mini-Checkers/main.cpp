@@ -228,9 +228,8 @@ bool playerMove(bool player, cBoard *cgame, Game* game)
 			return false;			//Returns false b/c of invalid move
 		}
 		//Valid Move
-		else
+		else if(cgame->movePiece(player, x, y, newx, newy))	//Moves piece on cBoard object
 		{
-			cgame->movePiece(player, x, y, newx, newy);	//Moves piece on cBoard object
 			std::cout << "Old Coordinates:\t" << x << "\t" << y << std::endl;
 			std::cout << "New Coordinates:\t" << newx << "\t" << newy << std::endl;
 			cgame->printBoard();	//Prints the console version of the board

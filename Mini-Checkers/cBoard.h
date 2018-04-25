@@ -30,7 +30,7 @@ public:
 	void del_next();					//'Setter' that deletes the current next value
 
 	void printBoard();												//Prints the current board to the console
-	void movePiece(bool player, int x, int y, int newx, int newy);	//Moves a player's piece
+	bool movePiece(bool player, int x, int y, int newx, int newy);	//Moves a player's piece
 	bool validMove(bool player, int x, int y, int newx, int newy);	//Validates a player's move
 	void countPieces();												//Counts total pieces for both players
 	bool isEnd();													//Checks to see if end conditions are met

@@ -150,7 +150,7 @@ void cBoard::printBoard()
 }
 
 //Moves a given players piece to given coordinates
-void cBoard::movePiece(bool player, int x, int y, int newx, int newy) 
+bool cBoard::movePiece(bool player, int x, int y, int newx, int newy) 
 {
 	//Checks to see if the given move is valid
 	if (this->validMove(player, x, y, newx, newy)) 
@@ -160,7 +160,7 @@ void cBoard::movePiece(bool player, int x, int y, int newx, int newy)
 		{
 			//Returns if jump moves are available, but current move is not a jump move
 			if (abs(newy - y) != 2)
-				return;
+				return false;
 		}
 		if (abs(newy - y) == 2)									//Checks if it is a jump
 			board[(newy + y) / 2][(newx + x) / 2] = EMPTY_CHAR;	//Removes 'jumped' piece
@@ -168,11 +168,11 @@ void cBoard::movePiece(bool player, int x, int y, int newx, int newy)
 		char piece = board[y][x];								//Temporary placeholder for the piece
 		board[y][x] = EMPTY_CHAR;								//Removes piece at old location
 		board[newy][newx] = piece;								//Sets piece at new location
+		this->countPieces();									//Counts all current pieces
+		return true;											//Move executed
 	}
 
-	this->countPieces();										//Counts all current pieces
-
-	return;
+	return false;												//Move not executed
 }
 
 //Validates moves by a specific player
