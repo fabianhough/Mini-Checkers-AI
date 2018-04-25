@@ -23,10 +23,10 @@ Uses SDL2 for GUI
 #include "Game.h"			//Game Engine Class; uses SDL2
 
 //Cutoff definitions
-#define CUTOFF 17			//Default Cutoff value for testing - Current value is max time under 15s
-#define EASY 2				//Easy cutoff value
+#define CUTOFF 17			//Default Cutoff value for testing - Current value is max time under 15s for i5-6600K Processor
+#define EASY 1				//Easy cutoff value
 #define MEDIUM 5			//Medium cutoff value
-#define HARD 17				//Hard cutoff value
+#define HARD 16				//Hard cutoff value
 int cutoff = CUTOFF;		//Global cutoff value for the AB Search
 
 //Statistics Variables
@@ -258,7 +258,8 @@ void aiTurn(cBoard* &cgame, Game* game)
 		AIStats();								//Prints statistics to the console
 		SDL_Delay(1000);						//Delays rendering to show AI movement
 		game->render(cgame);					//Re-renders the current game board
-		SDL_ShowWindow(game->get_window());		//Re-focuses window
+		SDL_ShowWindow(game->get_window());		//Re-shows window
+		SDL_RaiseWindow(game->get_window());	//Re-focuses window
 	}
 	//No available moves to the AI
 	else
