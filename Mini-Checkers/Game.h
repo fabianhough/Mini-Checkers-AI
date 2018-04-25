@@ -20,6 +20,8 @@ public:
 
 	void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);	//Initializes Game Engine
 
+	SDL_Window* get_window() { return window; }						//Returns the Game window object
+
 	void mouseSelect(int &x, int &y);								//Allows player to select piece on board
 
 	void render(cBoard *cgame);										//Renders the window

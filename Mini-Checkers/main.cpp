@@ -4,13 +4,17 @@
 //Project - AI Mini Checkers
 
 /*
+Simple (modified) Mini-Checker Game with Alpha-Beta Pruning Algorithm AI
+Has GUI, and 3 levels of difficulty, all aiming to complete searches within a span of 15 seconds
+(Search times are tested on an i5-6600K Intel Processor, as such, search times on other processors may vary)
 
+Modified rules as follows:
+- 6x6 board
+- No Kings -> No backwards movement
+- Jumps MUST be taken if they are available
 
-
-
+Uses SDL2 for GUI
 */
-
-
 
 
 #include <iostream>			//Standard IO operations
@@ -111,12 +115,8 @@ void playCheckers()
 		}
 	}
 
-	//Small code to delay exiting of the game engine window
-	int v;
-	std::cout << "Enter 0 to continue" << std::endl;
-	std::cin >> v;
-	if (v == 0)
-		game->clean();	//"Cleans" the game engine window
+	system("pause");	//Pauses the program so that the last image of the board is still available after completion
+	game->clean();		//"Cleans" the game engine window
 }
 
 //Intro sequence for the Checkers Game
@@ -253,10 +253,12 @@ void aiTurn(cBoard* &cgame, Game* game)
 	if (cgame->availMoves(false) && (cgame->isEnd() != true))
 	{
 		std::cout << std::endl << "AI is thinking..." << std::endl;
-		ABSearch(cgame);			//Executes the AB Search, and replaces cBoard with new one
-		cgame->printBoard();		//Prints the resultant cBoard to the console
-		AIStats();					//Prints statistics to the console
-		game->render(cgame);		//Re-renders the current game board
+		ABSearch(cgame);						//Executes the AB Search, and replaces cBoard with new one
+		cgame->printBoard();					//Prints the resultant cBoard to the console
+		AIStats();								//Prints statistics to the console
+		SDL_Delay(1000);						//Delays rendering to show AI movement
+		game->render(cgame);					//Re-renders the current game board
+		SDL_ShowWindow(game->get_window());		//Re-focuses window
 	}
 	//No available moves to the AI
 	else
